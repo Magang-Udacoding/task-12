@@ -152,7 +152,7 @@ export default function DetailBantuanPage() {
       {showToast && (
         <div
           role="status"
-          className="fixed bottom-6 right-6 z-50 flex max-w-md items-start gap-3 rounded-xl border border-green-300 bg-white p-4 text-slate-900 shadow-lg animate-in fade-in slide-in-from-bottom-4"
+          className="fixed bottom-4 left-4 right-4 z-50 flex items-start gap-3 rounded-xl border border-green-300 bg-white p-4 text-slate-900 shadow-lg animate-in fade-in slide-in-from-bottom-4 sm:bottom-6 sm:left-auto sm:right-6 sm:max-w-md"
         >
           <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 mt-0.5" />
           <div className="flex-1 text-sm">

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -13,6 +13,11 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "Papan Bantuan Warga",
   description: "Platform Saling Bantu dan Saling Jaga untuk Warga",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({

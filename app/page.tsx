@@ -160,7 +160,7 @@ export default function HomePage() {
         </div>
       ) : (
         <section>
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="text-xl font-bold text-text-main">
               Permintaan Bantuan Warga
             </h2>
