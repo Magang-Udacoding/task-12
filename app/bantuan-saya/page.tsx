@@ -5,19 +5,10 @@ export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
+import type { HelpRequest } from "@/lib/types";
 import { AlertCircle, Check, Clock, Trash2, X } from "lucide-react";
-
-type HelpRequest = {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  location: string;
-  status: string;
-  contact: string | null;
-  created_at: string;
-};
 
 export default function BantuanSayaPage() {
   const router = useRouter();
@@ -26,6 +17,7 @@ export default function BantuanSayaPage() {
   const [requests, setRequests] = useState<HelpRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
   // State Modal Konfirmasi Hapus (Opsi 2)
@@ -42,6 +34,7 @@ export default function BantuanSayaPage() {
         return;
       }
 
+      setCurrentUser(user);
       setAuthChecked(true);
 
       const { data, error: fetchError } = await supabase
@@ -67,19 +60,33 @@ export default function BantuanSayaPage() {
     if (!targetDeleteRequest) return;
     const id = targetDeleteRequest.id;
 
+    if (!currentUser) {
+      setError("Sesi pengguna tidak valid. Silakan masuk kembali.");
+      return;
+    }
+
     setDeletingId(id);
     setError("");
 
-    const { error: deleteError } = await supabase
+    const { data, error: deleteError } = await supabase
       .from("help_requests")
       .delete()
-      .eq("id", id);
+      .eq("id", id)
+      .eq("user_id", currentUser.id)
+      .select();
 
     setDeletingId(null);
     setTargetDeleteRequest(null);
 
     if (deleteError) {
       setError(`Gagal menghapus permohonan: ${deleteError.message}`);
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      setError(
+        "Permohonan bantuan tidak dapat dihapus. Anda hanya dapat menghapus permohonan milik Anda sendiri."
+      );
       return;
     }
 

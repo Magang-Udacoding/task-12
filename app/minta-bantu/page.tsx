@@ -7,12 +7,8 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { AlertCircle } from "lucide-react";
 
-const CATEGORIES = [
-  "Medis & Darurat",
-  "Sembako",
-  "Peminjaman Alat",
-  "Tenaga Relawan",
-] as const;
+import { HELP_CATEGORIES } from "@/lib/card-styles";
+
 
 export default function MintaBantuPage() {
   const router = useRouter();
@@ -81,6 +77,7 @@ export default function MintaBantuPage() {
       location: location.trim(),
       contact: contact.trim() || null,
       user_id: user.id,
+      status: "Menunggu",
     });
 
     setSubmitting(false);
@@ -167,7 +164,7 @@ export default function MintaBantuPage() {
             className="w-full min-h-[44px] rounded-lg border border-border bg-surface px-3.5 py-2.5 text-sm text-text-main focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-baltic-blue focus-visible:ring-offset-2"
           >
             <option value="">-- Pilih Kategori Bantuan --</option>
-            {CATEGORIES.map((cat) => (
+            {HELP_CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>
                 {cat}
               </option>

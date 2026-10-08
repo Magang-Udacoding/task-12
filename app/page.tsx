@@ -4,28 +4,11 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 import Card from "@/components/Card";
-import { CategoryType, StatusType } from "@/lib/card-styles";
+import { HELP_CATEGORIES } from "@/lib/card-styles";
+import type { HelpRequest } from "@/lib/types";
 import { AlertCircle, ChevronDown } from "lucide-react";
 
-type HelpRequest = {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  location: string;
-  status: string;
-  user_id: string;
-  contact: string | null;
-  created_at: string;
-};
-
-const CATEGORIES = [
-  "Semua",
-  "Medis & Darurat",
-  "Sembako",
-  "Peminjaman Alat",
-  "Tenaga Relawan",
-] as const;
+const CATEGORIES = ["Semua", ...HELP_CATEGORIES] as const;
 
 const PAGE_SIZE = 6;
 
@@ -37,15 +20,49 @@ export default function HomePage() {
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState("");
 
-  const loadRequests = async (isLoadMore = false) => {
-    if (isLoadMore) {
-      setLoadingMore(true);
-    } else {
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchInitial = async () => {
       setLoading(true);
       setError("");
-    }
 
-    const currentOffset = isLoadMore ? helpRequests.length : 0;
+      let query = supabase
+        .from("help_requests")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .range(0, PAGE_SIZE - 1);
+
+      if (activeCategory !== "Semua") {
+        query = query.eq("category", activeCategory);
+      }
+
+      const { data, error: fetchError } = await query;
+
+      if (!isMounted) return;
+
+      setLoading(false);
+
+      if (fetchError) {
+        setError("Gagal memuat data bantuan. Coba muat ulang halaman.");
+        return;
+      }
+
+      const fetchedItems = (data as HelpRequest[]) ?? [];
+      setHelpRequests(fetchedItems);
+      setHasMore(fetchedItems.length === PAGE_SIZE);
+    };
+
+    fetchInitial();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [activeCategory]);
+
+  const handleLoadMore = async () => {
+    setLoadingMore(true);
+    const currentOffset = helpRequests.length;
 
     let query = supabase
       .from("help_requests")
@@ -58,34 +75,17 @@ export default function HomePage() {
     }
 
     const { data, error: fetchError } = await query;
-
-    if (isLoadMore) {
-      setLoadingMore(false);
-    } else {
-      setLoading(false);
-    }
+    setLoadingMore(false);
 
     if (fetchError) {
-      setError("Gagal memuat data bantuan. Coba muat ulang halaman.");
+      setError("Gagal memuat data bantuan tambahan.");
       return;
     }
 
-    const fetchedItems = data ?? [];
-
-    if (isLoadMore) {
-      setHelpRequests((prev) => [...prev, ...fetchedItems]);
-    } else {
-      setHelpRequests(fetchedItems);
-    }
-
-    // Jika data yang didapat lebih sedikit dari PAGE_SIZE, berarti sudah habis
+    const fetchedItems = (data as HelpRequest[]) ?? [];
+    setHelpRequests((prev) => [...prev, ...fetchedItems]);
     setHasMore(fetchedItems.length === PAGE_SIZE);
   };
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadRequests(false);
-  }, [activeCategory]);
 
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-8 md:py-12 md:px-6">
@@ -173,8 +173,8 @@ export default function HomePage() {
             {helpRequests.map((request) => (
               <Card
                 key={request.id}
-                category={request.category as CategoryType}
-                status={request.status as StatusType}
+                category={request.category}
+                status={request.status}
                 title={request.title}
                 description={request.description}
                 location={request.location}
@@ -189,7 +189,7 @@ export default function HomePage() {
             <div className="mt-8 flex justify-center">
               <button
                 type="button"
-                onClick={() => loadRequests(true)}
+                onClick={handleLoadMore}
                 disabled={loadingMore}
                 className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg border border-border bg-surface px-6 py-2.5 text-sm font-semibold text-text-main shadow-xs transition hover:bg-slate-50 hover:border-baltic-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-baltic-blue disabled:cursor-not-allowed disabled:opacity-60"
               >

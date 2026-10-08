@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 export const dynamic = "force-dynamic";
@@ -8,6 +7,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
+import type { HelpRequest } from "@/lib/types";
 import {
   AlertCircle,
   Check,
@@ -18,18 +18,6 @@ import {
   MessageCircle,
   X,
 } from "lucide-react";
-
-type HelpRequest = {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  location: string;
-  status: string;
-  user_id: string;
-  contact: string | null;
-  created_at: string;
-};
 
 function buildWhatsAppUrl(contact: string, title: string): string {
   let digits = contact.replace(/\D/g, "");
@@ -58,11 +46,9 @@ export default function DetailBantuanPage() {
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
-    if (isNaN(id)) {
-      setFetchError("ID permohonan bantuan tidak valid.");
-      setLoading(false);
-      return;
-    }
+    if (isNaN(id)) return;
+
+    let isMounted = true;
 
     const loadData = async () => {
       const [
@@ -74,6 +60,8 @@ export default function DetailBantuanPage() {
         supabase.from("help_requests").select("*").eq("id", id).single(),
         supabase.auth.getUser(),
       ]);
+
+      if (!isMounted) return;
 
       setLoading(false);
 
@@ -87,20 +75,34 @@ export default function DetailBantuanPage() {
     };
 
     loadData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
   const handleHelp = async () => {
     setSubmitting(true);
     setActionError("");
 
-    const { error: rpcError } = await supabase.rpc("tandai_selesai", {
-      request_id: id,
-    });
+    const { data, error: updateError } = await supabase
+      .from("help_requests")
+      .update({ status: "Selesai" })
+      .eq("id", id)
+      .eq("status", "Menunggu")
+      .select();
 
     setSubmitting(false);
 
-    if (rpcError) {
-      setActionError(`Gagal memperbarui status: ${rpcError.message}`);
+    if (updateError) {
+      setActionError(`Gagal memperbarui status: ${updateError.message}`);
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      setActionError(
+        "Permintaan bantuan tidak dapat diperbarui. Mungkin status sudah diubah oleh relawan lain atau data tidak ditemukan."
+      );
       return;
     }
 
@@ -113,6 +115,26 @@ export default function DetailBantuanPage() {
       setShowToast(false);
     }, 6000);
   };
+
+  if (isNaN(id)) {
+    return (
+      <main className="mx-auto w-full max-w-2xl px-4 py-8 md:py-12 md:px-6">
+        <div
+          role="alert"
+          className="flex items-center gap-2.5 rounded-xl border border-alert-border bg-alert-bg px-4 py-3 text-sm font-medium text-alert-text"
+        >
+          <AlertCircle className="h-5 w-5 shrink-0" aria-hidden="true" />
+          <span>ID permohonan bantuan tidak valid.</span>
+        </div>
+        <Link
+          href="/"
+          className="mt-4 inline-flex min-h-[40px] items-center text-sm font-semibold text-baltic-blue hover:underline"
+        >
+          &larr; Kembali ke Beranda
+        </Link>
+      </main>
+    );
+  }
 
   if (loading) {
     return (

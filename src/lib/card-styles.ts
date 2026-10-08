@@ -7,7 +7,16 @@ export type CategoryType =
   | "Peminjaman Alat"
   | "Tenaga Relawan";
 
+export const HELP_CATEGORIES = [
+  "Medis & Darurat",
+  "Sembako",
+  "Peminjaman Alat",
+  "Tenaga Relawan",
+] as const;
+
 export type StatusType = "Menunggu" | "Selesai";
+
+export const STATUS_OPTIONS = ["Menunggu", "Selesai"] as const;
 
 export interface CategoryStyle {
   circleBg: string;
