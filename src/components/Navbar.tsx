@@ -2,48 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
-import {
-  Menu,
-  X,
-  Home,
-  PlusCircle,
-  ClipboardList,
-  LogOut,
-  LogIn,
-} from "lucide-react";
-
-const FOCUS_RING =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
-
-type NavLinkProps = {
-  href: string;
-  isActive: boolean;
-  children: ReactNode;
-};
-
-function DesktopNavLink({ href, isActive, children }: NavLinkProps) {
-  return (
-    <Link
-      href={href}
-      aria-current={isActive ? "page" : undefined}
-      className={`flex min-h-[44px] items-center rounded-lg px-3.5 py-2 text-sm font-semibold transition ${FOCUS_RING} focus-visible:ring-baltic-blue ${
-        isActive
-          ? "bg-baltic-blue/10 text-baltic-blue shadow-2xs"
-          : "text-text-muted hover:bg-slate-50 hover:text-baltic-blue"
-      }`}
-    >
-      {children}
-    </Link>
-  );
-}
 
 export default function Navbar() {
   const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -72,25 +37,7 @@ export default function Navbar() {
     };
   }, []);
 
-  // Tutup menu mobile ketika navigasi berpindah rute
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [pathname]);
-
-  // Tutup menu mobile ketika tombol Escape ditekan
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsMobileMenuOpen(false);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
   const handleLogout = async () => {
-    setIsMobileMenuOpen(false);
     const { error } = await supabase.auth.signOut();
 
     if (error) {
@@ -100,41 +47,51 @@ export default function Navbar() {
 
   const isActive = (path: string) => pathname === path;
 
+  const getLinkClasses = (path: string) =>
+    `flex min-h-[44px] shrink-0 items-center px-3.5 py-2 text-sm rounded-lg transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-baltic-blue focus-visible:ring-offset-2 ${
+      isActive(path)
+        ? "bg-baltic-blue/10 text-baltic-blue font-bold shadow-2xs"
+        : "text-text-muted hover:text-baltic-blue hover:bg-slate-50 font-medium"
+    }`;
+
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-surface shadow-xs">
+    <nav className="sticky top-0 z-40 border-b border-border bg-surface shadow-xs">
+      {/* Baris Utama: Brand Logo + Navigasi Desktop / Tombol Aksi Mobile */}
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2.5 md:px-6">
-        {/* Brand / Logo */}
         <Link
           href="/"
-          className={`shrink-0 rounded-md py-1 text-base font-bold text-baltic-blue md:text-lg ${FOCUS_RING} focus-visible:ring-baltic-blue`}
+          className="shrink-0 text-base font-bold text-baltic-blue md:text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-baltic-blue focus-visible:ring-offset-2 rounded-md py-1"
         >
           Papan Bantuan Warga
         </Link>
 
-        {/* Desktop Navigation (>= md) */}
-        <nav
-          aria-label="Navigasi Desktop"
-          className="hidden items-center gap-1.5 md:flex"
-        >
-          <DesktopNavLink href="/" isActive={isActive("/")}>
+        {/* Navigasi Desktop (>= md) */}
+        <div className="hidden md:flex items-center gap-2">
+          <Link
+            href="/"
+            aria-current={isActive("/") ? "page" : undefined}
+            className={getLinkClasses("/")}
+          >
             Beranda
-          </DesktopNavLink>
+          </Link>
 
           {user && (
             <>
-              <DesktopNavLink
+              <Link
                 href="/minta-bantu"
-                isActive={isActive("/minta-bantu")}
+                aria-current={isActive("/minta-bantu") ? "page" : undefined}
+                className={getLinkClasses("/minta-bantu")}
               >
                 Minta Bantuan
-              </DesktopNavLink>
+              </Link>
 
-              <DesktopNavLink
+              <Link
                 href="/bantuan-saya"
-                isActive={isActive("/bantuan-saya")}
+                aria-current={isActive("/bantuan-saya") ? "page" : undefined}
+                className={getLinkClasses("/bantuan-saya")}
               >
                 Bantuan Saya
-              </DesktopNavLink>
+              </Link>
             </>
           )}
 
@@ -142,7 +99,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={handleLogout}
-              className={`ml-2 flex min-h-[44px] items-center justify-center rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-xs transition hover:bg-red-700 ${FOCUS_RING} focus-visible:ring-red-600`}
+              className="flex min-h-[44px] items-center justify-center rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-xs transition hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2"
             >
               Keluar
             </button>
@@ -150,121 +107,73 @@ export default function Navbar() {
             <Link
               href="/login"
               aria-current={isActive("/login") ? "page" : undefined}
-              className={`ml-2 flex min-h-[44px] items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-xs transition ${FOCUS_RING} focus-visible:ring-baltic-blue ${
+              className={`flex min-h-[44px] items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-baltic-blue focus-visible:ring-offset-2 ${
                 isActive("/login")
-                  ? "bg-baltic-blue-hover"
-                  : "bg-baltic-blue hover:bg-baltic-blue-hover"
+                  ? "bg-baltic-blue-hover text-white shadow-xs"
+                  : "bg-baltic-blue text-white hover:bg-baltic-blue-hover shadow-xs"
               }`}
             >
               Masuk
             </Link>
           )}
-        </nav>
+        </div>
 
-        {/* Mobile Hamburger Button (< md) */}
-        <div className="flex items-center md:hidden">
-          <button
-            type="button"
-            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-            aria-expanded={isMobileMenuOpen}
-            aria-controls="mobile-nav"
-            aria-label={isMobileMenuOpen ? "Tutup menu utama" : "Buka menu utama"}
-            className={`flex h-11 w-11 items-center justify-center rounded-lg border border-border bg-surface text-text-main transition hover:bg-slate-50 ${FOCUS_RING} focus-visible:ring-baltic-blue`}
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-5 w-5" aria-hidden="true" />
-            ) : (
-              <Menu className="h-5 w-5" aria-hidden="true" />
-            )}
-          </button>
+        {/* Tombol Aksi Mobile (< md: Masuk / Keluar) */}
+        <div className="flex md:hidden items-center">
+          {user ? (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex min-h-[44px] items-center justify-center rounded-lg bg-red-600 px-3.5 py-2 text-sm font-semibold text-white shadow-xs transition hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2"
+            >
+              Keluar
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              aria-current={isActive("/login") ? "page" : undefined}
+              className={`flex min-h-[44px] items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-baltic-blue focus-visible:ring-offset-2 ${
+                isActive("/login")
+                  ? "bg-baltic-blue-hover text-white shadow-xs"
+                  : "bg-baltic-blue text-white hover:bg-baltic-blue-hover shadow-xs"
+              }`}
+            >
+              Masuk
+            </Link>
+          )}
         </div>
       </div>
 
-      {/* Mobile Drawer Panel (< md) */}
-      {isMobileMenuOpen && (
-        <div
-          id="mobile-nav"
-          className="border-t border-border bg-surface px-4 py-4 shadow-lg md:hidden animate-in fade-in slide-in-from-top-2 duration-150"
+      {/* Baris Navigasi Mobile (< md): Tab Navigasi Langsung dengan Active Link & Ukuran Standar */}
+      <div className="flex md:hidden items-center border-t border-border/70 px-4 py-1.5 overflow-x-auto gap-1.5 scrollbar-none">
+        <Link
+          href="/"
+          aria-current={isActive("/") ? "page" : undefined}
+          className={getLinkClasses("/")}
         >
-          <nav aria-label="Navigasi Mobile" className="flex flex-col gap-1">
+          Beranda
+        </Link>
+
+        {user && (
+          <>
             <Link
-              href="/"
-              aria-current={isActive("/") ? "page" : undefined}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`flex min-h-[44px] items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-semibold transition ${FOCUS_RING} focus-visible:ring-baltic-blue ${
-                isActive("/")
-                  ? "bg-baltic-blue/10 text-baltic-blue"
-                  : "text-text-main hover:bg-slate-50 hover:text-baltic-blue"
-              }`}
+              href="/minta-bantu"
+              aria-current={isActive("/minta-bantu") ? "page" : undefined}
+              className={getLinkClasses("/minta-bantu")}
             >
-              <Home className="h-4 w-4 shrink-0" aria-hidden="true" />
-              <span>Beranda</span>
+              Minta Bantuan
             </Link>
 
-            {user && (
-              <>
-                <Link
-                  href="/minta-bantu"
-                  aria-current={isActive("/minta-bantu")}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex min-h-[44px] items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-semibold transition ${FOCUS_RING} focus-visible:ring-baltic-blue ${
-                    isActive("/minta-bantu")
-                      ? "bg-baltic-blue/10 text-baltic-blue"
-                      : "text-text-main hover:bg-slate-50 hover:text-baltic-blue"
-                  }`}
-                >
-                  <PlusCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-                  <span>Minta Bantuan</span>
-                </Link>
-
-                <Link
-                  href="/bantuan-saya"
-                  aria-current={isActive("/bantuan-saya")}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex min-h-[44px] items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-semibold transition ${FOCUS_RING} focus-visible:ring-baltic-blue ${
-                    isActive("/bantuan-saya")
-                      ? "bg-baltic-blue/10 text-baltic-blue"
-                      : "text-text-main hover:bg-slate-50 hover:text-baltic-blue"
-                  }`}
-                >
-                  <ClipboardList className="h-4 w-4 shrink-0" aria-hidden="true" />
-                  <span>Bantuan Saya</span>
-                </Link>
-              </>
-            )}
-
-            <div className="my-2 border-t border-border" />
-
-            {user ? (
-              <div className="flex flex-col gap-2 pt-1">
-                {user.email && (
-                  <p className="truncate px-3.5 text-xs text-text-muted">
-                    Masuk sebagai <span className="font-semibold text-text-main">{user.email}</span>
-                  </p>
-                )}
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className={`flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-red-700 ${FOCUS_RING} focus-visible:ring-red-600`}
-                >
-                  <LogOut className="h-4 w-4" aria-hidden="true" />
-                  <span>Keluar</span>
-                </button>
-              </div>
-            ) : (
-              <Link
-                href="/login"
-                aria-current={isActive("/login") ? "page" : undefined}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg bg-baltic-blue px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-baltic-blue-hover ${FOCUS_RING} focus-visible:ring-baltic-blue`}
-              >
-                <LogIn className="h-4 w-4" aria-hidden="true" />
-                <span>Masuk ke Akun</span>
-              </Link>
-            )}
-          </nav>
-        </div>
-      )}
-    </header>
+            <Link
+              href="/bantuan-saya"
+              aria-current={isActive("/bantuan-saya") ? "page" : undefined}
+              className={getLinkClasses("/bantuan-saya")}
+            >
+              Bantuan Saya
+            </Link>
+          </>
+        )}
+      </div>
+    </nav>
   );
 }
