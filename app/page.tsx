@@ -90,7 +90,7 @@ export default function HomePage() {
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-8 md:py-12 md:px-6">
       <section className="mb-8 md:mb-10">
-        <p className="mb-2 text-sm font-semibold tracking-wide text-baltic-blue uppercase">
+        <p className="mb-2 text-sm font-semibold tracking-wide text-blue-energy-text uppercase">
           Papan Bantuan Warga
         </p>
 

@@ -93,7 +93,7 @@ export default function Card({
       </div>
 
       <div className="flex items-center justify-between pt-2 border-t border-border/60">
-        <span className="text-xs font-semibold text-baltic-blue">{location}</span>
+        <span className="text-xs font-semibold text-blue-energy-text">{location}</span>
 
         <time
           dateTime={date}

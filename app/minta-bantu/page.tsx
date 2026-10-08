@@ -104,7 +104,7 @@ export default function MintaBantuPage() {
   return (
     <main className="mx-auto w-full max-w-2xl px-4 py-8 md:py-12 md:px-6">
       <section className="mb-6 md:mb-8">
-        <p className="mb-1 text-sm font-semibold tracking-wide text-baltic-blue uppercase">
+        <p className="mb-1 text-sm font-semibold tracking-wide text-blue-energy-text uppercase">
           Papan Bantuan Warga
         </p>
         <h1 className="text-2xl font-bold tracking-tight text-text-main md:text-3xl">

@@ -4,9 +4,14 @@
   --background: #f8fafc;
   --foreground: #0f172a;
 
-  /* Brand Colors */
-  --color-baltic-blue: #006594;
-  --color-baltic-blue-hover: #005075;
+  /* Brand Colors: Blue Energy (#4693FF) */
+  --color-blue-energy: #4693ff;
+  --color-blue-energy-hover: #2b7cf5;
+  --color-blue-energy-text: #1d6fe6;
+
+  /* Backward Compatibility & Component Aliasing */
+  --color-baltic-blue: var(--color-blue-energy);
+  --color-baltic-blue-hover: var(--color-blue-energy-hover);
   --color-turquoise: #65d4b1;
 
   /* Neutrals */
@@ -29,8 +34,12 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  --color-baltic-blue: var(--color-baltic-blue);
-  --color-baltic-blue-hover: var(--color-baltic-blue-hover);
+  --color-blue-energy: var(--color-blue-energy);
+  --color-blue-energy-hover: var(--color-blue-energy-hover);
+  --color-blue-energy-text: var(--color-blue-energy-text);
+
+  --color-baltic-blue: var(--color-blue-energy);
+  --color-baltic-blue-hover: var(--color-blue-energy-hover);
   --color-turquoise: var(--color-turquoise);
 
   --color-surface: var(--color-surface);

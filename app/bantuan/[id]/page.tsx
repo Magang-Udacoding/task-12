@@ -205,7 +205,7 @@ export default function DetailBantuanPage() {
           {request.title}
         </h1>
 
-        <div className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-baltic-blue">
+        <div className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-blue-energy-text">
           <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
           <span>{request.location}</span>
         </div>

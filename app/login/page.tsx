@@ -91,7 +91,7 @@ export default function LoginPage() {
     <main className="mx-auto flex min-h-[calc(100vh-73px)] w-full max-w-md items-center px-4 py-8 md:py-12">
       <section className="w-full rounded-2xl border border-border bg-surface p-6 shadow-sm md:p-8">
         <div className="mb-6">
-          <p className="mb-1 text-sm font-semibold tracking-wide text-baltic-blue uppercase">
+          <p className="mb-1 text-sm font-semibold tracking-wide text-blue-energy-text uppercase">
             Papan Bantuan Warga
           </p>
 
