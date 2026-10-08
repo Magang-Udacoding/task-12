@@ -34,14 +34,20 @@ export default function LoginPage() {
     setLoading(true);
 
     if (isRegister) {
+      if (typeof window !== "undefined") {
+        window.sessionStorage.setItem("is_registering", "true");
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
       });
 
-      setLoading(false);
-
       if (error) {
+        if (typeof window !== "undefined") {
+          window.sessionStorage.removeItem("is_registering");
+        }
+        setLoading(false);
         setError(`Pendaftaran gagal: ${error.message}`);
         return;
       }
@@ -50,6 +56,11 @@ export default function LoginPage() {
         await supabase.auth.signOut();
       }
 
+      if (typeof window !== "undefined") {
+        window.sessionStorage.removeItem("is_registering");
+      }
+
+      setLoading(false);
       setIsRegister(false);
       setPassword("");
       setMessage(

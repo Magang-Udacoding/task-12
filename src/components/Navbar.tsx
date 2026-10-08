@@ -28,6 +28,12 @@ export default function Navbar() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (
+        typeof window !== "undefined" &&
+        window.sessionStorage.getItem("is_registering") === "true"
+      ) {
+        return;
+      }
       setUser(session?.user ?? null);
     });
 
