@@ -47,37 +47,30 @@ export default function Navbar() {
 
   const isActive = (path: string) => pathname === path;
 
-  const desktopLinkClasses = (path: string) =>
-    `inline-flex items-center px-3 py-1.5 text-sm rounded-md transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-baltic-blue ${
+  const getLinkClasses = (path: string) =>
+    `flex min-h-[44px] shrink-0 items-center px-3.5 py-2 text-sm rounded-lg transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-baltic-blue focus-visible:ring-offset-2 ${
       isActive(path)
-        ? "bg-baltic-blue/10 text-baltic-blue font-semibold"
-        : "text-text-muted hover:text-baltic-blue hover:bg-slate-50 font-medium"
-    }`;
-
-  const mobileLinkClasses = (path: string) =>
-    `inline-flex items-center px-2.5 py-1 text-xs rounded-md shrink-0 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-baltic-blue ${
-      isActive(path)
-        ? "bg-baltic-blue/10 text-baltic-blue font-semibold"
+        ? "bg-baltic-blue/10 text-baltic-blue font-bold shadow-2xs"
         : "text-text-muted hover:text-baltic-blue hover:bg-slate-50 font-medium"
     }`;
 
   return (
     <nav className="sticky top-0 z-40 border-b border-border bg-surface shadow-xs">
-      {/* Baris Utama: Logo & Navigasi Layar Lebar (sm:) atau Tombol Aksi Mobile (< sm) */}
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2 md:px-6">
+      {/* Baris Utama: Brand Logo + Navigasi Desktop / Tombol Aksi Mobile */}
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2.5 md:px-6">
         <Link
           href="/"
-          className="shrink-0 text-base font-bold text-baltic-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-baltic-blue rounded-md py-0.5"
+          className="shrink-0 text-base font-bold text-baltic-blue md:text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-baltic-blue focus-visible:ring-offset-2 rounded-md py-1"
         >
           Papan Bantuan Warga
         </Link>
 
-        {/* Navigasi Desktop / Layar Lebar (>= sm) */}
-        <div className="hidden sm:flex items-center gap-1.5 md:gap-2">
+        {/* Navigasi Desktop (>= md) */}
+        <div className="hidden md:flex items-center gap-2">
           <Link
             href="/"
             aria-current={isActive("/") ? "page" : undefined}
-            className={desktopLinkClasses("/")}
+            className={getLinkClasses("/")}
           >
             Beranda
           </Link>
@@ -87,7 +80,7 @@ export default function Navbar() {
               <Link
                 href="/minta-bantu"
                 aria-current={isActive("/minta-bantu") ? "page" : undefined}
-                className={desktopLinkClasses("/minta-bantu")}
+                className={getLinkClasses("/minta-bantu")}
               >
                 Minta Bantuan
               </Link>
@@ -95,7 +88,7 @@ export default function Navbar() {
               <Link
                 href="/bantuan-saya"
                 aria-current={isActive("/bantuan-saya") ? "page" : undefined}
-                className={desktopLinkClasses("/bantuan-saya")}
+                className={getLinkClasses("/bantuan-saya")}
               >
                 Bantuan Saya
               </Link>
@@ -106,7 +99,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={handleLogout}
-              className="ml-1 inline-flex items-center justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white shadow-2xs transition hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+              className="flex min-h-[44px] items-center justify-center rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-xs transition hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2"
             >
               Keluar
             </button>
@@ -114,10 +107,10 @@ export default function Navbar() {
             <Link
               href="/login"
               aria-current={isActive("/login") ? "page" : undefined}
-              className={`ml-1 inline-flex items-center justify-center rounded-md px-3.5 py-1.5 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-baltic-blue ${
+              className={`flex min-h-[44px] items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-baltic-blue focus-visible:ring-offset-2 ${
                 isActive("/login")
-                  ? "bg-baltic-blue-hover text-white shadow-2xs"
-                  : "bg-baltic-blue text-white hover:bg-baltic-blue-hover shadow-2xs"
+                  ? "bg-baltic-blue-hover text-white shadow-xs"
+                  : "bg-baltic-blue text-white hover:bg-baltic-blue-hover shadow-xs"
               }`}
             >
               Masuk
@@ -125,13 +118,13 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Tombol Aksi Mobile (< sm) */}
-        <div className="flex sm:hidden items-center">
+        {/* Tombol Aksi Mobile (< md: Masuk / Keluar) */}
+        <div className="flex md:hidden items-center">
           {user ? (
             <button
               type="button"
               onClick={handleLogout}
-              className="inline-flex items-center justify-center rounded-md bg-red-600 px-2.5 py-1 text-xs font-medium text-white shadow-2xs transition hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+              className="flex min-h-[44px] items-center justify-center rounded-lg bg-red-600 px-3.5 py-2 text-sm font-semibold text-white shadow-xs transition hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2"
             >
               Keluar
             </button>
@@ -139,10 +132,10 @@ export default function Navbar() {
             <Link
               href="/login"
               aria-current={isActive("/login") ? "page" : undefined}
-              className={`inline-flex items-center justify-center rounded-md px-3 py-1 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-baltic-blue ${
+              className={`flex min-h-[44px] items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-baltic-blue focus-visible:ring-offset-2 ${
                 isActive("/login")
-                  ? "bg-baltic-blue-hover text-white shadow-2xs"
-                  : "bg-baltic-blue text-white hover:bg-baltic-blue-hover shadow-2xs"
+                  ? "bg-baltic-blue-hover text-white shadow-xs"
+                  : "bg-baltic-blue text-white hover:bg-baltic-blue-hover shadow-xs"
               }`}
             >
               Masuk
@@ -151,12 +144,12 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Baris Navigasi Mobile (< sm) */}
-      <div className="flex sm:hidden items-center border-t border-border/60 px-4 py-1 overflow-x-auto gap-1 scrollbar-none">
+      {/* Baris Navigasi Mobile (< md): Tab Navigasi Langsung dengan Active Link & Ukuran Standar */}
+      <div className="flex md:hidden items-center border-t border-border/70 px-4 py-1.5 overflow-x-auto gap-1.5 scrollbar-none">
         <Link
           href="/"
           aria-current={isActive("/") ? "page" : undefined}
-          className={mobileLinkClasses("/")}
+          className={getLinkClasses("/")}
         >
           Beranda
         </Link>
@@ -166,7 +159,7 @@ export default function Navbar() {
             <Link
               href="/minta-bantu"
               aria-current={isActive("/minta-bantu") ? "page" : undefined}
-              className={mobileLinkClasses("/minta-bantu")}
+              className={getLinkClasses("/minta-bantu")}
             >
               Minta Bantuan
             </Link>
@@ -174,7 +167,7 @@ export default function Navbar() {
             <Link
               href="/bantuan-saya"
               aria-current={isActive("/bantuan-saya") ? "page" : undefined}
-              className={mobileLinkClasses("/bantuan-saya")}
+              className={getLinkClasses("/bantuan-saya")}
             >
               Bantuan Saya
             </Link>
