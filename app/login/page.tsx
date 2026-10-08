@@ -47,12 +47,13 @@ export default function LoginPage() {
       }
 
       if (data.session) {
-        router.push("/");
-        return;
+        await supabase.auth.signOut();
       }
 
+      setIsRegister(false);
+      setPassword("");
       setMessage(
-        "Pendaftaran berhasil. Silakan cek email Anda atau masuk langsung.",
+        "Pendaftaran berhasil! Silakan masuk dengan email dan kata sandi Anda."
       );
       return;
     }
