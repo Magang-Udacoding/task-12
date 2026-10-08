@@ -92,28 +92,45 @@ export default function DetailBantuanPage() {
       .eq("status", "Menunggu")
       .select();
 
-    setSubmitting(false);
-
     if (updateError) {
+      setSubmitting(false);
       setActionError(`Gagal memperbarui status: ${updateError.message}`);
       return;
     }
 
-    if (!data || data.length === 0) {
-      setActionError(
-        "Permintaan bantuan tidak dapat diperbarui. Mungkin status sudah diubah oleh relawan lain atau data tidak ditemukan."
-      );
+    if (data && data.length > 0) {
+      setSubmitting(false);
+      setRequest((prev) => (prev ? { ...prev, status: "Selesai" } : prev));
+      setHelped(true);
+      setShowToast(true);
+
+      setTimeout(() => {
+        setShowToast(false);
+      }, 6000);
       return;
     }
 
-    setRequest((prev) => (prev ? { ...prev, status: "Selesai" } : prev));
-    setHelped(true);
-    setShowToast(true);
+    // Fallback: Jika policy RLS UPDATE relawan belum dipasang di database Supabase, coba jalankan RPC tandai_selesai jika tersedia
+    const { error: rpcError } = await supabase.rpc("tandai_selesai", {
+      request_id: id,
+    });
 
-    // Auto-dismiss toast setelah 6 detik
-    setTimeout(() => {
-      setShowToast(false);
-    }, 6000);
+    setSubmitting(false);
+
+    if (!rpcError) {
+      setRequest((prev) => (prev ? { ...prev, status: "Selesai" } : prev));
+      setHelped(true);
+      setShowToast(true);
+
+      setTimeout(() => {
+        setShowToast(false);
+      }, 6000);
+      return;
+    }
+
+    setActionError(
+      "Permintaan bantuan tidak dapat diperbarui. Pastikan Policy RLS relawan sudah diaktifkan di Supabase SQL Editor atau status belum diubah oleh relawan lain."
+    );
   };
 
   if (isNaN(id)) {
