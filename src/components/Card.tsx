@@ -75,9 +75,9 @@ export default function Card({
 
         {/* Lencana status dengan ikon dan teks (WCAG SC 1.4.1) */}
         <span
-          className={`inline-flex shrink-0 whitespace-nowrap items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold leading-tight ${statusStyle.badgeBorder} ${statusStyle.badgeBg} ${statusStyle.badgeText}`}
+          className={`inline-flex shrink-0 whitespace-nowrap items-center gap-0.5 rounded-full border px-1.5 py-0 text-[9px] font-semibold leading-tight ${statusStyle.badgeBorder} ${statusStyle.badgeBg} ${statusStyle.badgeText}`}
         >
-          <StatusIcon className="h-3 w-3 shrink-0" aria-hidden="true" />
+          <StatusIcon className="h-2 w-2 shrink-0" aria-hidden="true" />
           {status}
         </span>
       </div>

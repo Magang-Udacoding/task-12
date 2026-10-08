@@ -225,16 +225,16 @@ export default function BantuanSayaPage() {
                   </span>
 
                   <span
-                    className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold whitespace-nowrap ${
+                    className={`inline-flex items-center gap-0.5 rounded-full border px-1.5 py-0 text-[9px] font-semibold whitespace-nowrap ${
                       request.status === "Selesai"
                         ? "border-green-200 bg-status-done-bg text-status-done-text"
                         : "border-amber-200 bg-status-waiting-bg text-status-waiting-text"
                     }`}
                   >
                     {request.status === "Selesai" ? (
-                      <Check className="h-3 w-3" aria-hidden="true" />
+                      <Check className="h-2 w-2" aria-hidden="true" />
                     ) : (
-                      <Clock className="h-3 w-3" aria-hidden="true" />
+                      <Clock className="h-2 w-2" aria-hidden="true" />
                     )}
                     {request.status}
                   </span>
