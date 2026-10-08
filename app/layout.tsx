@@ -10,10 +10,9 @@ const montserrat = Montserrat({
   variable: "--font-montserrat",
 });
 
-// metadata docs
 export const metadata: Metadata = {
-  title: "Citizen's Help Board",
-  description: "A Simple Platform to Help Everyone",
+  title: "Papan Bantuan Warga",
+  description: "Platform Saling Bantu dan Saling Jaga untuk Warga",
 };
 
 export default function RootLayout({
@@ -23,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={montserrat.variable}>
-      <body className="min-h-screen bg-gray-50 text-gray-900 antialiased">
+      <body className="min-h-screen bg-background text-foreground font-sans antialiased">
         <Navbar />
         {children}
       </body>
