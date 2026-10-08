@@ -59,25 +59,25 @@ export default function Card({
 
   const content = (
     <>
-      <div className="flex items-start justify-between gap-3">
-        {/* Wadah Kategori: Ikon 40px + Teks 16px */}
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between gap-2.5">
+        {/* Wadah Kategori: Ikon 32px + Teks 14px */}
+        <div className="flex min-w-0 items-center gap-2.5">
           <div
-            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${categoryStyle.circleBg} ${categoryStyle.iconColor}`}
+            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${categoryStyle.circleBg} ${categoryStyle.iconColor}`}
             aria-hidden="true"
           >
-            <IconComponent className="h-5 w-5" />
+            <IconComponent className="h-4 w-4" />
           </div>
-          <span className={`text-base font-semibold ${categoryStyle.textColor}`}>
+          <span className={`truncate text-sm font-semibold ${categoryStyle.textColor}`}>
             {category}
           </span>
         </div>
 
         {/* Lencana status dengan ikon dan teks (WCAG SC 1.4.1) */}
         <span
-          className={`flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${statusStyle.badgeBorder} ${statusStyle.badgeBg} ${statusStyle.badgeText}`}
+          className={`inline-flex shrink-0 whitespace-nowrap items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold leading-tight ${statusStyle.badgeBorder} ${statusStyle.badgeBg} ${statusStyle.badgeText}`}
         >
-          <StatusIcon className="h-3.5 w-3.5" aria-hidden="true" />
+          <StatusIcon className="h-3 w-3 shrink-0" aria-hidden="true" />
           {status}
         </span>
       </div>
